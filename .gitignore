@@ -1,0 +1,6 @@
+
+*.tfvars
+*.tfstate
+*.exe
+deployment/.terraform/modules/modules.json
+deployment/.terraform.lock.hcl
