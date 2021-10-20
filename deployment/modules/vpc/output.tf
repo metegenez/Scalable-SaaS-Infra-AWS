@@ -26,10 +26,26 @@ output "ecs_subnet_c" {
   value = aws_subnet.ecs_c
 }
 
+output "rds_subnet_a" {
+  value = aws_subnet.rds_a
+}
+
+output "rds_subnet_b" {
+  value = aws_subnet.rds_b
+}
+
+output "rds_subnet_c" {
+  value = aws_subnet.rds_c
+}
+
 output "load_balancer_sg" {
   value = aws_security_group.load_balancer
 }
 
 output "ecs_sg" {
   value = aws_security_group.ecs_task
+}
+
+output "rds_cluster_sg" {
+  value = aws_security_group.rds_cluster
 }

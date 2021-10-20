@@ -4,3 +4,9 @@
 *.exe
 deployment/.terraform/modules/modules.json
 deployment/.terraform.lock.hcl
+**/.idea/**
+*.pyc
+/urlshortener/**
+urlshortener/*
+*.zip
+**/migrations/**

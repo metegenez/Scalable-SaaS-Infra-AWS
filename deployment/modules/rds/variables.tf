@@ -1,9 +1,3 @@
-variable "ecs_subnet_a" {}
-
-variable "ecs_subnet_b" {}
-
-variable "ecs_subnet_c" {}
-
 variable "db_username" {
   description = "Database administrator username"
   type        = string
@@ -16,20 +10,15 @@ variable "db_password" {
   sensitive   = true
 }
 
-# variable "db_instance_class" {
-#   value = lookup(var.db_instance_class_map, terraform.workspace, "db.t3.micro")
-# }
+variable "rds_cluster_sg" {
+  description = "DB security group"
+}
 
-variable "vpc" {}
+variable "rds_subnet_a" {
+}
 
-# variable "db_instance_class_map" {
-#   type = map(string)
+variable "rds_subnet_b" {
+}
 
-#   default = {
-#     dev     = "bucket-dev"
-#     staging = "bucket-for-staging"
-#     qa      = "bucket-name-for-preprod"
-#     prod    = "bucket-for-production"
-#   }
-
-# }
+variable "rds_subnet_c" {
+}
