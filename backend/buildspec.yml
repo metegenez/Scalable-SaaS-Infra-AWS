@@ -27,9 +27,9 @@ phases:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
       - docker push $BACKEND_REPOSITORY_URI:$IMAGE_TAG
-      - BACKEND_TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$APP_NAME-back-end" --region $REGION)
+      - BACKEND_TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$APP_NAME-backend" --region $REGION)
       - NEW_BACKEND_TASK_DEFINITION=$(echo $BACKEND_TASK_DEFINITION | jq --arg IMAGE "$NEW_BACKEND_IMAGE" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)')
       - NEW_BACKEND_TASK_INFO=$(aws ecs register-task-definition --region $REGION --cli-input-json "$NEW_BACKEND_TASK_DEFINITION")
       - NEW_BACKEND_REVISION=$(echo $NEW_BACKEND_TASK_INFO | jq '.taskDefinition.revision')
-      - aws ecs update-service --cluster $APP_NAME --service "$APP_NAME-BackendService" --task-definition "$APP_NAME-back-end:${NEW_BACKEND_REVISION}"
+      - aws ecs update-service --cluster $APP_NAME --service "$APP_NAME-BackendService" --task-definition "$APP_NAME-backend:${NEW_BACKEND_REVISION}"
       - echo All success!

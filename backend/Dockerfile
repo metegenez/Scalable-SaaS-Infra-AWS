@@ -3,7 +3,7 @@ ENV PYTHONUNBUFFERED=1
 
 
 # set a directory for the app
-WORKDIR /usr/back-end
+WORKDIR /usr/backend
 
 # copy all the files to the container
 COPY . .
