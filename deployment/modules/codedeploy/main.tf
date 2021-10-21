@@ -136,7 +136,8 @@ resource "aws_codebuild_project" "BackendCodeBuild" {
     type            = "GITHUB"
     location        = "https://github.com/metegenez/Scalable-SaaS-Infra-AWS.git"
     git_clone_depth = 1
-    buildspec       = "back-end/buildspec.yml"
+    buildspec       = "backend/buildspec.yml"
+
 
   }
 
