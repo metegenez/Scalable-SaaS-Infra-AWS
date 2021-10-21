@@ -14,3 +14,15 @@ variable "branch" {
   }
 
 }
+
+variable "ecs_cluster" {
+
+}
+
+variable "ecs_backend_service" {
+
+}
+
+variable "ecs_backend_taskdefinition" {
+
+}

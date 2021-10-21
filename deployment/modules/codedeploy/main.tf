@@ -103,6 +103,15 @@ resource "aws_codebuild_webhook" "BackendCodeBuildWebHook" {
 
 }
 
+resource "aws_ecr_repository" "backend" {
+  name                 = "cloudvisor-backend-${terraform.workspace}"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
 resource "aws_codebuild_project" "BackendCodeBuild" {
   name           = "cloudvisor-${terraform.workspace}-BackendCodeBuild"
   build_timeout  = "10"
@@ -127,8 +136,24 @@ resource "aws_codebuild_project" "BackendCodeBuild" {
     privileged_mode             = true
 
     environment_variable {
-      name  = "TERRAFORM_VERSION"
-      value = "0.12.16"
+      name  = "WORKSPACE"
+      value = terraform.workspace
+    }
+    environment_variable {
+      name  = "CLUSTER_NAME"
+      value = var.ecs_cluster.name
+    }
+    environment_variable {
+      name  = "SERVICE_NAME"
+      value = var.ecs_backend_service.name
+    }
+    environment_variable {
+      name  = "BACKEND_REPOSITORY_URI"
+      value = aws_ecr_repository.backend.repository_url
+    }
+    environment_variable {
+      name  = "TASK_DEFINITION_NAME"
+      value = var.ecs_backend_taskdefinition.name
     }
   }
 
