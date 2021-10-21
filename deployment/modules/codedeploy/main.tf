@@ -138,6 +138,7 @@ resource "aws_codebuild_project" "BackendCodeBuild" {
     git_clone_depth = 1
     buildspec       = "backend/buildspec.yml"
 
+
   }
 
   tags = {
