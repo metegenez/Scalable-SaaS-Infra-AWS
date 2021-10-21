@@ -24,7 +24,7 @@ phases:
 
   post_build:
     commands:
-      - echo Build completed on `date`
+      - echo Build is completed on `date`
       - echo Pushing the Docker image...
       - docker push $BACKEND_REPOSITORY_URI:$IMAGE_TAG
       - BACKEND_TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$APP_NAME-back-end" --region $REGION)
