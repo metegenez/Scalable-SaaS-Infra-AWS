@@ -37,6 +37,14 @@ module "ecs" {
   ecs_target_group = module.elb.ecs_target_group
 }
 
+module "codedeploy" {
+  source                       = "./modules/codedeploy"
+  github_personal_access_token = var.github_personal_token
+  ecs_backend_service          = module.ecs.ecs_backend_service
+  ecs_cluster                  = module.ecs.ecs_cluster
+  ecs_backend_taskdefinition   = module.ecs.ecs_backend_taskdefinition
+}
+
 module "rds" {
   source         = "./modules/rds"
   db_username    = var.db_username

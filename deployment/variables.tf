@@ -21,3 +21,9 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
+variable "github_personal_token" {
+  description = "Personal access tokens function like ordinary OAuth access tokens. They can be used instead of a password for Git over HTTPS, or can be used to authenticate to the API over Basic Authentication."
+  type        = string
+  sensitive   = true
+}
