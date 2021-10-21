@@ -153,7 +153,7 @@ resource "aws_codebuild_project" "BackendCodeBuild" {
     }
     environment_variable {
       name  = "TASK_DEFINITION_NAME"
-      value = var.ecs_backend_taskdefinition.name
+      value = var.ecs_backend_taskdefinition.family
     }
   }
 
