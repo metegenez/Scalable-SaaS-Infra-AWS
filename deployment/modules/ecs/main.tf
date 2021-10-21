@@ -14,12 +14,12 @@ resource "aws_ecs_task_definition" "node1" {
       "cpu" : 512,
       "environment" : [
         {
-          "name" : "AUTHOR",
-          "value" : "metegenez"
+          "name" : "STAGE",
+          "value" : "${terraform.workspace}" //Findout settings from stage.
         }
       ],
       "memory" : 1024,
-      "image" : "dockersamples/static-site",
+      "image" : "${var.backend_ecr.repository_url}",
       "essential" : true,
       "name" : "site"
   }])
@@ -36,15 +36,23 @@ resource "aws_ecs_task_definition" "node1" {
 }
 
 resource "aws_ecs_service" "node1" {
-  name             = "cloudvisor-node-${terraform.workspace}"
-  cluster          = aws_ecs_cluster.node1.id
-  task_definition  = aws_ecs_task_definition.node1.arn
-  desired_count    = 1
-  launch_type      = "FARGATE"
-  platform_version = "1.4.0"
+  name                               = "cloudvisor-node-${terraform.workspace}"
+  cluster                            = aws_ecs_cluster.node1.id
+  task_definition                    = aws_ecs_task_definition.node1.arn
+  desired_count                      = 1
+  launch_type                        = "FARGATE"
+  platform_version                   = "1.4.0"
+  propagate_tags                     = "SERVICE"
+  scheduling_strategy                = "REPLICA"
+  deployment_minimum_healthy_percent = 100
+  deployment_maximum_percent         = 200
 
   lifecycle {
     ignore_changes = [desired_count]
+  }
+
+  deployment_controller {
+    type = "ECS"
   }
 
   network_configuration {

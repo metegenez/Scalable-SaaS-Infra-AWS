@@ -9,3 +9,7 @@ variable "ecs_subnet_c" {}
 variable "ecs_sg" {}
 
 variable "ecs_role" {}
+
+variable "backend_ecr" {
+
+}

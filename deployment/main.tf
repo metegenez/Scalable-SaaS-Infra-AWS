@@ -10,6 +10,8 @@ module "cognito" {
   source = "./modules/cognito"
 }
 
+
+
 module "elb" {
   source                 = "./modules/elb"
   load_balancer_sg       = module.vpc.load_balancer_sg
@@ -35,6 +37,15 @@ module "ecs" {
   ecs_subnet_b     = module.vpc.ecs_subnet_b
   ecs_subnet_c     = module.vpc.ecs_subnet_c
   ecs_target_group = module.elb.ecs_target_group
+  backend_ecr      = module.codedeploy.backend_ecr
+}
+
+module "autoscaling" {
+  source      = "./modules/autoscaling"
+  ecs_cluster = module.ecs.ecs_cluster
+  ecs_service = module.ecs.ecs_backend_service
+
+
 }
 
 module "codedeploy" {
