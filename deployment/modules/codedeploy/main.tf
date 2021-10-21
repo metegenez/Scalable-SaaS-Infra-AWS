@@ -167,6 +167,6 @@ resource "aws_codebuild_project" "BackendCodeBuild" {
   }
 
   tags = {
-    Project = "cloudviso-${terraform.workspace}"
+    Project = "cloudvisor-${terraform.workspace}"
   }
 }
