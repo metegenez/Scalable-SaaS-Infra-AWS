@@ -11,3 +11,4 @@ urlshortener/*
 *.zip
 **/migrations/**
 sa
+as
