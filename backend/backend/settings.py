@@ -10,16 +10,18 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-from pathlib import Path
-import time
 import os
+import time
+from pathlib import Path
+
 import environ
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
 environ.Env.read_env()
-# Quick-start development settings - unsuitable for production
+# Quick-start development settings - unsuitable for producti
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -30,7 +32,7 @@ TIME_ZONE = 'Europe/Istanbul'
 CORS_ORIGIN_ALLOW_ALL = True
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-APPEND_SLASH=False
+APPEND_SLASH = False
 # Application definition
 
 INSTALLED_APPS = [
@@ -119,7 +121,6 @@ LANGUAGE_CODE = 'en-us'
 USE_I18N = True
 
 USE_L10N = True
-
 
 
 # Static files (CSS, JavaScript, Images)
