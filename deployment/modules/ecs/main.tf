@@ -1,5 +1,6 @@
 
 
+data "aws_region" "current" {}
 resource "aws_ecs_task_definition" "node1" {
   family = "node1"
   container_definitions = jsonencode(
@@ -34,6 +35,8 @@ resource "aws_ecs_task_definition" "node1" {
     Project = "cloudvisor-${terraform.workspace}"
   }
 }
+
+
 
 resource "aws_ecs_service" "node1" {
   name                               = "cloudvisor-node-${terraform.workspace}"
