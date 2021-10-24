@@ -6,6 +6,13 @@ from rest_framework.response import Response
 from rest_framework import status
 import uuid
 
+
+# Create your views here.
+class HealthCheck(APIView):
+    permission_classes = [AllowAny]
+    def get(self, request, format="json"):
+        return Response(status=status.HTTP_200_OK)
+
 # Create your views here.
 class UrlRedirect(APIView):
     permission_classes = [AllowAny]
