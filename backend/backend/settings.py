@@ -31,9 +31,10 @@ USE_TZ = True
 TIME_ZONE = 'Europe/Istanbul'
 CORS_ORIGIN_ALLOW_ALL = True
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if os.environ.get("STAGE") == "dev" else False
 APPEND_SLASH = False
-print(os.environ.get("STAGE"))
+print(os.environ.get("db_password"))
+print(os.environ.get("DB_HOST"))
 # Application definition
 
 INSTALLED_APPS = [
@@ -87,7 +88,7 @@ DATABASES = {
         'USER': env('DB_USER'),
         'PASSWORD': env('DB_PASSWD'),
         'HOST': env('DB_HOST'),
-        'PORT': env('DB_PORT'),
+        'PORT': "5432",
         'TEST': {
             'NAME': 'metawise_{}'.format(time.time()),
         }
