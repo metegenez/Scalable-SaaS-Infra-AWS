@@ -30,5 +30,6 @@ phases:
       - NEW_BACKEND_TASK_DEFINITION=$(echo $BACKEND_TASK_DEFINITION | jq --arg IMAGE "$NEW_BACKEND_IMAGE" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)')
       - NEW_BACKEND_TASK_INFO=$(aws ecs register-task-definition --region $REGION --cli-input-json "$NEW_BACKEND_TASK_DEFINITION")
       - NEW_BACKEND_REVISION=$(echo $NEW_BACKEND_TASK_INFO | jq '.taskDefinition.revision')
+      - echo $TASK_DEFINITION_NAME:${NEW_BACKEND_REVISION}
       - aws ecs update-service --cluster $CLUSTER_NAME --service "$SERVICE_NAME" --task-definition "$TASK_DEFINITION_NAME:${NEW_BACKEND_REVISION}"
       - echo All success!
