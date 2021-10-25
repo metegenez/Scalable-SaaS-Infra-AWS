@@ -33,6 +33,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 APPEND_SLASH = False
+print(os.environ.get("STAGE"))
 # Application definition
 
 INSTALLED_APPS = [
