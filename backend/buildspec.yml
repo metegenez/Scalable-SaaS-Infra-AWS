@@ -8,7 +8,7 @@ phases:
       - aws --version
       - jq --version
       - echo $CODEBUILD_WEBHOOK_EVENT
-      - echo Logging in to Amazon ECR...
+      - echo Logging in to Amazon ECR....
       - aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $BACKEND_REPOSITORY_URI
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION)
       - IMAGE_TAG=latest
@@ -18,7 +18,6 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - echo $(jq "." backend/appspec.json)
       - docker build -t $BACKEND_REPOSITORY_URI:latest backend/
       - docker tag $BACKEND_REPOSITORY_URI:latest $BACKEND_REPOSITORY_URI:$IMAGE_TAG
       
@@ -33,7 +32,7 @@ phases:
       - NEW_BACKEND_TASK_INFO=$(aws ecs register-task-definition --region $REGION --cli-input-json "$NEW_BACKEND_TASK_DEFINITION")
       - NEW_BACKEND_REVISION=$(echo $NEW_BACKEND_TASK_INFO | jq '.taskDefinition.revision')
       - NEW_BACKEND_TASK_ARN=$(echo $NEW_BACKEND_TASK_INFO | jq '.taskDefinition.taskDefinitionArn')
-      - APPSPEC = $(echo $(jq '(.Resources[] | select(.TargetService.Properties.LoadBalancerInfo.ContainerName == "backend") | .TargetService.Properties.TaskDefinition) |= $NEW_BACKEND_TASK_ARN' /usr/backend/appspec.json))
+      - APPSPEC = $(echo $(jq '(.Resources[] | select(.TargetService.Properties.LoadBalancerInfo.ContainerName == "backend") | .TargetService.Properties.TaskDefinition) |= $NEW_BACKEND_TASK_ARN' backend/appspec.json))
       - echo APPSPEC
       - aws deploy create-deployment --application-name "trial" --deployment-group-name "trial-sa" --cli-input-json $APPSPEC
       - echo All success!
