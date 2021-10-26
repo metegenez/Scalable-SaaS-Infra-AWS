@@ -1,4 +1,4 @@
-FROM public.ecr.aws/bitnami/python:3.7.12
+FROM python:3
 ENV PYTHONUNBUFFERED=1
 
 
