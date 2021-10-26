@@ -18,8 +18,10 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
+      - echo $(jq "." backend/appspec.json)
       - docker build -t $BACKEND_REPOSITORY_URI:latest backend/
       - docker tag $BACKEND_REPOSITORY_URI:latest $BACKEND_REPOSITORY_URI:$IMAGE_TAG
+      
 
   post_build:
     commands:
