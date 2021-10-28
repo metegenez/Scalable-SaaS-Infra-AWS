@@ -1,0 +1,10 @@
+{
+  "revision": {
+    "revisionType": "S3",
+    "s3Location": {
+      "bucket": "mete",
+      "key": "AppSpecContent.json",
+      "bundleType": "JSON"
+    }
+  }
+}
