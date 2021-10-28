@@ -1,17 +1,1 @@
-{
-  "version": 0,
-  "Resources": [
-    {
-      "TargetService": {
-        "Type": "AWS::ECS::Service",
-        "Properties": {
-          "TaskDefinition": "arn:aws:ecs:us-east-1:714130184239:task-definition/node1:60",
-          "LoadBalancerInfo": {
-            "ContainerName": "backend",
-            "ContainerPort": 8000
-          }
-        }
-      }
-    }
-  ]
-}
+{ "version": 0, "Resources": [ { "TargetService": { "Type": "AWS::ECS::Service", "Properties": { "TaskDefinition": "arn:aws:ecs:us-east-1:714130184239:task-definition/node1:60", "LoadBalancerInfo": { "ContainerName": "backend", "ContainerPort": 8000 } } } } ] }

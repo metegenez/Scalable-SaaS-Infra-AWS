@@ -31,7 +31,7 @@ phases:
       - NEW_BACKEND_TASK_DEFINITION=$(echo $BACKEND_TASK_DEFINITION | jq --arg IMAGE "$NEW_BACKEND_IMAGE" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)')
       - NEW_BACKEND_TASK_INFO=$(aws ecs register-task-definition --region $REGION --cli-input-json "$NEW_BACKEND_TASK_DEFINITION")
       - NEW_BACKEND_REVISION=$(echo $NEW_BACKEND_TASK_INFO | jq '.taskDefinition.revision')
-      - NEW_BACKEND_TASK_ARN=$(echo $NEW_BACKEND_TASK_INFO | jq '.taskDefinition.taskDefinitionArn')
+      - NEW_BACKEND_TASK_ARN=$(echo $NEW_BACKEND_TASK_INFO | jq '.taskDefinition.taskDefinitionArn') | sed 's/\"//g'
       - echo $NEW_BACKEND_TASK_ARN
       - echo $(jq --raw-output --arg NEW_BACKEND_TASK_ARN "$NEW_BACKEND_TASK_ARN" '(.Resources[] | select(.TargetService.Properties.LoadBalancerInfo.ContainerName == "backend") | .TargetService.Properties.TaskDefinition) |= $NEW_BACKEND_TASK_ARN' backend/AppSpecContent.json) > backend/AppSpecContent.json
       - S3_BUCKET="s3://${DEPLOY_BUCKET}"
