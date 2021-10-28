@@ -16,45 +16,38 @@ resource "aws_iam_role" "CodeBuildRole" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "codebuild-policy-attachments" {
-  for_each = toset([
-    "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
-    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess",
-    "arn:aws:iam::aws:policy/AmazonECS_FullAccess",
-    "arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess",
-    "arn:aws:iam::aws:policy/CloudWatchFullAccess",
-    "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
-  ])
-  role       = aws_iam_role.CodeBuildRole.name
-  policy_arn = each.value
-}
+resource "aws_iam_role_policy" "example" {
+  role = aws_iam_role.CodeBuildRole.name
 
-
-resource "aws_iam_role" "BackendTaskExecutionRole" {
-  assume_role_policy = jsonencode({
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "ecs-tasks.amazonaws.com"
-        }
-      },
-    ]
-    Version = "2012-10-17"
-  })
-
-  managed_policy_arns = [
-    "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
-    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Resource": [
+        "*"
+      ],
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:*"
+      ],
+      "Resource": [
+        "${aws_s3_bucket.deployment.arn}",
+        "${aws_s3_bucket.deployment.arn}/*"
+      ]
+    }
   ]
-
-  tags = {
-    Project = "cloudvisor-${terraform.workspace}"
-  }
 }
-
-
+POLICY
+}
 
 resource "aws_codebuild_source_credential" "GithubCredentials" {
   auth_type   = "PERSONAL_ACCESS_TOKEN"
@@ -167,6 +160,14 @@ resource "aws_codebuild_project" "BackendCodeBuild" {
     }
     environment_variable {
       name  = "TASK_DEFINITION_NAME"
+      value = var.ecs_backend_taskdefinition.family
+    }
+    environment_variable {
+      name  = "DP_GROUP_NAME"
+      value = var.ecs_backend_taskdefinition.family
+    }
+    environment_variable {
+      name  = "APPLICATION_NAME"
       value = var.ecs_backend_taskdefinition.family
     }
   }
