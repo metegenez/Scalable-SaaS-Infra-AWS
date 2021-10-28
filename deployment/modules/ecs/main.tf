@@ -92,7 +92,7 @@ resource "aws_ecs_service" "node1" {
   deployment_maximum_percent         = 200
   force_new_deployment               = false
   lifecycle {
-    ignore_changes = [desired_count]
+    ignore_changes = [desired_count, task_definition]
   }
 
   deployment_controller {
