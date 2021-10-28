@@ -163,7 +163,7 @@ resource "aws_codebuild_project" "BackendCodeBuild" {
     }
     environment_variable {
       name  = "DP_GROUP_NAME"
-      value = aws_codedeploy_deployment_group.cloudvisor_dep.app_name
+      value = aws_codedeploy_deployment_group.cloudvisor_dep.deployment_group_name
     }
     environment_variable {
       name  = "APPLICATION_NAME"
