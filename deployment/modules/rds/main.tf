@@ -1,4 +1,8 @@
 data "aws_availability_zones" "available" {}
+
+data "aws_secretsmanager_secret" "by-arn" {
+  arn = "arn:aws:secretsmanager:us-east-1:714130184239:secret:rdsclustersecrets-Gm7kwP"
+}
 resource "random_string" "finalshot" {
   length  = 5
   special = false

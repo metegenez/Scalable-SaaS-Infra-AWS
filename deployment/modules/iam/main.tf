@@ -15,6 +15,7 @@ resource "aws_iam_role" "ecs_service" {
   ]
 }
 EOF
+
 }
 
 data "aws_iam_policy_document" "ecs_service_elb" {
@@ -63,7 +64,8 @@ data "aws_iam_policy_document" "ecs_service_standard" {
       "ecs:Submit*",
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
-      "logs:PutLogEvents"
+      "logs:PutLogEvents",
+      "ecr:*",
     ]
 
     resources = [
@@ -106,40 +108,40 @@ data "aws_iam_policy_document" "ecs_service_scaling" {
 }
 
 resource "aws_iam_policy" "ecs_service_elb" {
-  name = "dev-to-elb"
-  path = "/"
+  name        = "dev-to-elb"
+  path        = "/"
   description = "Allow access to the service elb"
 
   policy = data.aws_iam_policy_document.ecs_service_elb.json
 }
 
 resource "aws_iam_policy" "ecs_service_standard" {
-  name = "dev-to-standard"
-  path = "/"
+  name        = "dev-to-standard"
+  path        = "/"
   description = "Allow standard ecs actions"
 
   policy = data.aws_iam_policy_document.ecs_service_standard.json
 }
 
 resource "aws_iam_policy" "ecs_service_scaling" {
-  name = "dev-to-scaling"
-  path = "/"
+  name        = "dev-to-scaling"
+  path        = "/"
   description = "Allow ecs service scaling"
 
   policy = data.aws_iam_policy_document.ecs_service_scaling.json
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_service_elb" {
-  role = aws_iam_role.ecs_service.name
+  role       = aws_iam_role.ecs_service.name
   policy_arn = aws_iam_policy.ecs_service_elb.arn
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_service_standard" {
-  role = aws_iam_role.ecs_service.name
+  role       = aws_iam_role.ecs_service.name
   policy_arn = aws_iam_policy.ecs_service_standard.arn
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_service_scaling" {
-  role = aws_iam_role.ecs_service.name
+  role       = aws_iam_role.ecs_service.name
   policy_arn = aws_iam_policy.ecs_service_scaling.arn
 }

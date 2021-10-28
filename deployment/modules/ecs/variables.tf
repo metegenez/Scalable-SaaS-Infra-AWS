@@ -13,3 +13,11 @@ variable "ecs_role" {}
 variable "backend_ecr" {
 
 }
+
+variable "aws_rds_cluster_name" {
+
+}
+
+variable "aws_rds_cluster_host" {
+
+}

@@ -26,3 +26,15 @@ variable "ecs_backend_service" {
 variable "ecs_backend_taskdefinition" {
 
 }
+
+
+variable "ecs_test_target_group" {
+
+}
+
+variable "ecs_target_group" {
+
+}
+variable "aws_backend_lb_listener" {
+
+}

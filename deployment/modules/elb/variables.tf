@@ -14,12 +14,3 @@ variable "load_balancer_subnet_c" {}
 
 variable "vpc" {}
 
-variable "cognito_pool" {
-}
-
-variable "cognito_client" {
-
-}
-variable "cognito_domain" {
-
-}
