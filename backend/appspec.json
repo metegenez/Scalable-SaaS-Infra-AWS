@@ -1,7 +1,9 @@
 {
-  "revisionType": "AppSpecContent",
-  "appSpecContent": {
-    "content": "string",
-    "sha256": "string"
+  "revision": {
+    "appSpecContent": {
+      "content": "string",
+      "sha256": "string"
+    },
+    "revisionType": "AppSpecContent"
   }
 }
