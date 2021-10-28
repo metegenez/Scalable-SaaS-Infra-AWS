@@ -15,25 +15,25 @@ resource "aws_iam_role" "CodeBuildRole" {
 }
 EOF
 }
-
-resource "aws_iam_role_policy" "example" {
+resource "aws_iam_role_policy_attachment" "codebuild-policy-attachments" {
+  for_each = toset([
+    "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
+    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess",
+    "arn:aws:iam::aws:policy/AmazonECS_FullAccess",
+    "arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess",
+    "arn:aws:iam::aws:policy/CloudWatchFullAccess",
+    "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+  ])
+  role       = aws_iam_role.CodeBuildRole.name
+  policy_arn = each.value
+}
+resource "aws_iam_role_policy" "s3" {
   role = aws_iam_role.CodeBuildRole.name
 
   policy = <<POLICY
 {
   "Version": "2012-10-17",
   "Statement": [
-    {
-      "Effect": "Allow",
-      "Resource": [
-        "*"
-      ],
-      "Action": [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-      ]
-    },
     {
       "Effect": "Allow",
       "Action": [
@@ -48,7 +48,6 @@ resource "aws_iam_role_policy" "example" {
 }
 POLICY
 }
-
 resource "aws_codebuild_source_credential" "GithubCredentials" {
   auth_type   = "PERSONAL_ACCESS_TOKEN"
   server_type = "GITHUB"
