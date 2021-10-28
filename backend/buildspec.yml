@@ -34,7 +34,7 @@ phases:
       - NEW_BACKEND_TASK_ARN=$(echo $NEW_BACKEND_TASK_INFO | jq '.taskDefinition.taskDefinitionArn')
       - echo $(jq "." backend/appspec.json)
       - echo $NEW_BACKEND_TASK_ARN
-      - RAW_STRING=$(echo $(jq --arg NEW_BACKEND_TASK_ARN "$NEW_BACKEND_TASK_ARN" '(.Resources[] | select(.TargetService.Properties.LoadBalancerInfo.ContainerName == "backend") | .TargetService.Properties.TaskDefinition) |= $NEW_BACKEND_TASK_ARN' backend/AppSpecContent.json | jq tostring)) 
+      - RAW_STRING=$(echo $(jq --arg NEW_BACKEND_TASK_ARN "$NEW_BACKEND_TASK_ARN" '(.Resources[] | select(.TargetService.Properties.LoadBalancerInfo.ContainerName == "backend") | .TargetService.Properties.TaskDefinition) |= $NEW_BACKEND_TASK_ARN' backend/AppSpecContent.json)) 
       - SHA_256_RAW=$(echo -n $RAW_STRING | sha256sum | head -c 40)
       - jq --arg RAW_STRING "$RAW_STRING" '.revision.appSpecContent.content = $RAW_STRING'  backend/appspec.json > backend/temp_config.json
       # - echo $(jq --arg NEW_BACKEND_TASK_ARN "$NEW_BACKEND_TASK_ARN" '(.Resources[] | select(.TargetService.Properties.LoadBalancerInfo.ContainerName == "backend") | .TargetService.Properties.TaskDefinition) |= $NEW_BACKEND_TASK_ARN' backend/appspec.json) > backend/config.json
