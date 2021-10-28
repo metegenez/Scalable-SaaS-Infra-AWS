@@ -1,8 +1,7 @@
 {
   "revision": {
     "appSpecContent": {
-      "content": "string",
-      "sha256": "string"
+      "content": "string"
     },
     "revisionType": "AppSpecContent"
   }
