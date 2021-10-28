@@ -66,6 +66,9 @@ data "aws_iam_policy_document" "ecs_service_standard" {
       "logs:CreateLogStream",
       "logs:PutLogEvents",
       "ecr:*",
+      "ssm:GetParameters",
+      "secretsmanager:GetSecretValue",
+      "kms:Decrypt"
     ]
 
     resources = [

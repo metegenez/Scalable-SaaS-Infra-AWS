@@ -18,15 +18,15 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      # - docker build -t $BACKEND_REPOSITORY_URI:latest backend/
-      # - docker tag $BACKEND_REPOSITORY_URI:latest $BACKEND_REPOSITORY_URI:$IMAGE_TAG
+      - docker build -t $BACKEND_REPOSITORY_URI:latest backend/
+      - docker tag $BACKEND_REPOSITORY_URI:latest $BACKEND_REPOSITORY_URI:$IMAGE_TAG
       
 
   post_build:
     commands:
       - echo Build is completed on `date`
       - echo Pushing the Docker image...
-      # - docker push $BACKEND_REPOSITORY_URI:$IMAGE_TAG
+      - docker push $BACKEND_REPOSITORY_URI:$IMAGE_TAG
       - BACKEND_TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$TASK_DEFINITION_NAME" --region $REGION)
       - NEW_BACKEND_TASK_DEFINITION=$(echo $BACKEND_TASK_DEFINITION | jq --arg IMAGE "$NEW_BACKEND_IMAGE" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)')
       - NEW_BACKEND_TASK_INFO=$(aws ecs register-task-definition --region $REGION --cli-input-json "$NEW_BACKEND_TASK_DEFINITION")

@@ -84,10 +84,10 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWD'),
-        'HOST': env('DB_HOST'),
+        'NAME': os.environ.get("DB_HOST"),
+        'USER': os.environ.get("db_username"),
+        'PASSWORD': os.environ.get("db_password"),
+        'HOST': os.environ.get("DB_HOST"),
         'PORT': "5432",
         'TEST': {
             'NAME': 'metawise_{}'.format(time.time()),
