@@ -163,11 +163,11 @@ resource "aws_codebuild_project" "BackendCodeBuild" {
     }
     environment_variable {
       name  = "DP_GROUP_NAME"
-      value = var.ecs_backend_taskdefinition.family
+      value = aws_codedeploy_deployment_group.cloudvisor_dep.app_name
     }
     environment_variable {
       name  = "APPLICATION_NAME"
-      value = var.ecs_backend_taskdefinition.family
+      value = aws_codedeploy_app.cloudvisor_app.name
     }
   }
 
@@ -186,8 +186,8 @@ resource "aws_codebuild_project" "BackendCodeBuild" {
 }
 
 ///////////////////////////////////////// SILINECEK
-resource "aws_iam_role" "example" {
-  name = "example-role"
+resource "aws_iam_role" "cd" {
+  name = "cd"
 
   assume_role_policy = <<EOF
 {
@@ -206,62 +206,69 @@ resource "aws_iam_role" "example" {
 EOF
 }
 
+resource "aws_iam_role_policy_attachment" "codedeploy-policy-attachments" {
+  for_each = toset([
+    "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
+    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess",
+    "arn:aws:iam::aws:policy/AmazonECS_FullAccess",
+    "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole",
+    "arn:aws:iam::aws:policy/CloudWatchFullAccess",
+    "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+  ])
+  role       = aws_iam_role.cd.name
+  policy_arn = each.value
+}
 
+resource "aws_codedeploy_app" "cloudvisor_app" {
+  compute_platform = "ECS"
+  name             = "cloudvisor-${terraform.workspace}-app"
+}
 
-# resource "aws_iam_role_policy_attachment" "AWSCodeDeployRole" {
-#   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
-#   role       = aws_iam_role.example.name
-# }
-# resource "aws_codedeploy_app" "example" {
-#   compute_platform = "ECS"
-#   name             = "example"
-# }
+resource "aws_codedeploy_deployment_group" "cloudvisor_dep" {
+  app_name               = aws_codedeploy_app.cloudvisor_app.name
+  deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"
+  deployment_group_name  = "cloudvisor-${terraform.workspace}-group"
+  service_role_arn       = aws_iam_role.cd.arn
 
-# resource "aws_codedeploy_deployment_group" "example" {
-#   app_name               = aws_codedeploy_app.example.name
-#   deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"
-#   deployment_group_name  = "example"
-#   service_role_arn       = aws_iam_role.example.arn
+  auto_rollback_configuration {
+    enabled = true
+    events  = ["DEPLOYMENT_FAILURE"]
+  }
 
-#   auto_rollback_configuration {
-#     enabled = true
-#     events  = ["DEPLOYMENT_FAILURE"]
-#   }
+  blue_green_deployment_config {
+    deployment_ready_option {
+      action_on_timeout = "CONTINUE_DEPLOYMENT"
+    }
 
-#   blue_green_deployment_config {
-#     deployment_ready_option {
-#       action_on_timeout = "CONTINUE_DEPLOYMENT"
-#     }
+    terminate_blue_instances_on_deployment_success {
+      action                           = "TERMINATE"
+      termination_wait_time_in_minutes = 5
+    }
+  }
 
-#     terminate_blue_instances_on_deployment_success {
-#       action                           = "TERMINATE"
-#       termination_wait_time_in_minutes = 5
-#     }
-#   }
+  deployment_style {
+    deployment_option = "WITH_TRAFFIC_CONTROL"
+    deployment_type   = "BLUE_GREEN"
+  }
 
-#   deployment_style {
-#     deployment_option = "WITH_TRAFFIC_CONTROL"
-#     deployment_type   = "BLUE_GREEN"
-#   }
+  ecs_service {
+    cluster_name = var.ecs_cluster.name
+    service_name = var.ecs_backend_service.name
+  }
 
-#   ecs_service {
-#     cluster_name = var.ecs_cluster.name
-#     service_name = var.ecs_backend_service.name
-#   }
+  load_balancer_info {
+    target_group_pair_info {
+      prod_traffic_route {
+        listener_arns = [var.aws_backend_lb_listener.arn]
+      }
 
-#   load_balancer_info {
-#     target_group_pair_info {
-#       prod_traffic_route {
-#         listener_arns = [var.aws_backend_lb_listener.arn]
-#       }
+      target_group {
+        name = var.ecs_target_group.name
+      }
 
-#       target_group {
-#         name = var.ecs_target_group.name
-#       }
-
-#       target_group {
-#         name = var.ecs_test_target_group.name
-#       }
-#     }
-#   }
-# }
+      target_group {
+        name = var.ecs_test_target_group.name
+      }
+    }
+  }
+}

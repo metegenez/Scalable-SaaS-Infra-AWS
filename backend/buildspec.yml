@@ -38,5 +38,5 @@ phases:
       - echo $S3_BUCKET
       - aws s3 cp backend/AppSpecContent.json "$S3_BUCKET"
       - echo $(jq --arg DEPLOY_BUCKET "$DEPLOY_BUCKET" '.revision.s3Location.bucket = $DEPLOY_BUCKET'  backend/create-deployment.json) > backend/create-deployment.json
-      - aws deploy create-deployment --application-name trial --deployment-group-name trial-sa --region $REGION --cli-input-json file://backend/create-deployment.json
+      - aws deploy create-deployment --application-name "$APPLICATION_NAME" --deployment-group-name "$DP_GROUP_NAME" --region $REGION --cli-input-json file://backend/create-deployment.json
       - echo All success!
