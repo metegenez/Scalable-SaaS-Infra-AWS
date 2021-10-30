@@ -7,11 +7,12 @@ phases:
       - REGION=us-east-1
       - aws --version
       - npm --version
+      - cd frontend
+      - npm install
 
   build:
     commands:
       - echo Build started on `date`
-      - cd frontend
       - npm run-script build
       
   post_build:
