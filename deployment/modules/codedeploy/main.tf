@@ -58,37 +58,43 @@ resource "aws_codebuild_webhook" "BackendCodeBuildWebHook" {
   project_name = aws_codebuild_project.BackendCodeBuild.name
 
 
-  filter_group {
-    filter {
-      type    = "EVENT"
-      pattern = "PULL_REQUEST_MERGED"
-    }
+  dynamic "filter_group" {
+    for_each = terraform.workspace == "dev" ? ["1"] : []
+    content {
+      filter {
+        type    = "EVENT"
+        pattern = "PUSH"
+      }
 
-    filter {
-      type    = "HEAD_REF"
-      pattern = lookup(var.branch, terraform.workspace, "dev")
-    }
+      filter {
+        type    = "HEAD_REF"
+        pattern = lookup(var.branch, terraform.workspace, "dev")
+      }
 
-    filter {
-      type    = "FILE_PATH"
-      pattern = "backend/*"
+      filter {
+        type    = "FILE_PATH"
+        pattern = "backend/*"
+      }
     }
   }
 
-  filter_group {
-    filter {
-      type    = "EVENT"
-      pattern = "PUSH"
-    }
+  dynamic "filter_group" {
+    for_each = terraform.workspace != "dev" ? ["1"] : []
+    content {
+      filter {
+        type    = "EVENT"
+        pattern = "PULL_REQUEST_MERGED"
+      }
 
-    filter {
-      type    = "HEAD_REF"
-      pattern = lookup(var.branch, terraform.workspace, "dev")
-    }
+      filter {
+        type    = "HEAD_REF"
+        pattern = lookup(var.branch, terraform.workspace, "dev")
+      }
 
-    filter {
-      type    = "FILE_PATH"
-      pattern = "backend/*"
+      filter {
+        type    = "FILE_PATH"
+        pattern = "backend/*"
+      }
     }
   }
 
@@ -185,9 +191,8 @@ resource "aws_codebuild_project" "BackendCodeBuild" {
   }
 }
 
-///////////////////////////////////////// SILINECEK
 resource "aws_iam_role" "cd" {
-  name = "cd"
+  name = "cd-${terraform.workspace}"
 
   assume_role_policy = <<EOF
 {
@@ -219,6 +224,28 @@ resource "aws_iam_role_policy_attachment" "codedeploy-policy-attachments" {
   policy_arn = each.value
 }
 
+resource "aws_iam_role_policy" "s33" {
+  role = aws_iam_role.cd.name
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:*"
+      ],
+      "Resource": [
+        "${aws_s3_bucket.deployment.arn}",
+        "${aws_s3_bucket.deployment.arn}/*"
+      ]
+    }
+  ]
+}
+POLICY
+}
+
 resource "aws_codedeploy_app" "cloudvisor_app" {
   compute_platform = "ECS"
   name             = "cloudvisor-${terraform.workspace}-app"
@@ -236,6 +263,7 @@ resource "aws_codedeploy_deployment_group" "cloudvisor_dep" {
   }
 
   blue_green_deployment_config {
+
     deployment_ready_option {
       action_on_timeout = "CONTINUE_DEPLOYMENT"
     }
@@ -263,11 +291,11 @@ resource "aws_codedeploy_deployment_group" "cloudvisor_dep" {
       }
 
       target_group {
-        name = var.ecs_target_group.name
+        name = var.ecs_target_group_b.name
       }
 
       target_group {
-        name = var.ecs_test_target_group.name
+        name = var.ecs_target_group_a.name
       }
     }
   }

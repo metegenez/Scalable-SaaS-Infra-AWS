@@ -1,4 +1,4 @@
-variable "ecs_target_group" {}
+variable "ecs_target_group_b" {}
 
 variable "ecs_subnet_a" {}
 
@@ -18,6 +18,13 @@ variable "aws_rds_cluster_name" {
 
 }
 
+variable "ecs_target_group_a" {
+
+}
+
 variable "aws_rds_cluster_host" {
 
+}
+variable "current_deployment_state" {
+  
 }

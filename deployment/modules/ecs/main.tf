@@ -92,7 +92,7 @@ resource "aws_ecs_service" "node1" {
   deployment_maximum_percent         = 200
   force_new_deployment               = false
   lifecycle {
-    ignore_changes = [desired_count, task_definition]
+    ignore_changes = [desired_count, task_definition, load_balancer]
   }
 
   deployment_controller {
@@ -109,7 +109,7 @@ resource "aws_ecs_service" "node1" {
   }
 
   load_balancer {
-    target_group_arn = var.ecs_target_group.arn
+    target_group_arn = var.current_deployment_state == "A" ? var.ecs_target_group_a.arn : var.ecs_target_group_b.arn
     container_name   = "backend"
     container_port   = 8000
   }

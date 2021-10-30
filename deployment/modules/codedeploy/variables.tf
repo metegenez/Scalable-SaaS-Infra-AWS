@@ -28,13 +28,16 @@ variable "ecs_backend_taskdefinition" {
 }
 
 
-variable "ecs_test_target_group" {
+variable "ecs_target_group_a" {
 
 }
 
-variable "ecs_target_group" {
+variable "ecs_target_group_b" {
 
 }
 variable "aws_backend_lb_listener" {
+
+}
+variable "current_deployment_state" {
 
 }

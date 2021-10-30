@@ -14,8 +14,8 @@ resource "aws_lb" "elb" {
   }
 }
 
-resource "aws_lb_target_group" "ecs" {
-  name        = "backend-${terraform.workspace}-${substr(uuid(), 0, 3)}"
+resource "aws_lb_target_group" "target_b" {
+  name        = "backend-target-b-${terraform.workspace}-${substr(uuid(), 0, 3)}"
   port        = 8000
   protocol    = "HTTP"
   vpc_id      = var.vpc.id
@@ -36,8 +36,8 @@ resource "aws_lb_target_group" "ecs" {
   }
 }
 
-resource "aws_lb_target_group" "backend-green" {
-  name        = "backend-green-${terraform.workspace}-${substr(uuid(), 0, 3)}"
+resource "aws_lb_target_group" "target_a" {
+  name        = "backend-target-a-${terraform.workspace}-${substr(uuid(), 0, 3)}"
   port        = 8000
   protocol    = "HTTP"
   vpc_id      = var.vpc.id
@@ -68,7 +68,7 @@ resource "aws_lb_listener" "https" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.ecs.arn
+    target_group_arn = var.current_deployment_state == "A" ? aws_lb_target_group.target_a.arn : aws_lb_target_group.target_b.arn
   }
 }
 

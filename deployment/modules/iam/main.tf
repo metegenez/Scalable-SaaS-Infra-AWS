@@ -1,5 +1,5 @@
 resource "aws_iam_role" "ecs_service" {
-  name = "ecs-service"
+  name = "ecs-service-${terraform.workspace}"
 
   assume_role_policy = <<EOF
 {
@@ -111,7 +111,7 @@ data "aws_iam_policy_document" "ecs_service_scaling" {
 }
 
 resource "aws_iam_policy" "ecs_service_elb" {
-  name        = "dev-to-elb"
+  name        = "dev-to-elb-${terraform.workspace}"
   path        = "/"
   description = "Allow access to the service elb"
 
@@ -119,7 +119,7 @@ resource "aws_iam_policy" "ecs_service_elb" {
 }
 
 resource "aws_iam_policy" "ecs_service_standard" {
-  name        = "dev-to-standard"
+  name        = "dev-to-standard-${terraform.workspace}"
   path        = "/"
   description = "Allow standard ecs actions"
 
@@ -127,7 +127,7 @@ resource "aws_iam_policy" "ecs_service_standard" {
 }
 
 resource "aws_iam_policy" "ecs_service_scaling" {
-  name        = "dev-to-scaling"
+  name        = "dev-to-scaling-${terraform.workspace}"
   path        = "/"
   description = "Allow ecs service scaling"
 
