@@ -1,0 +1,3 @@
+#!/bin/sh
+aws application-autoscaling register-scalable-target --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --cli-input-json file://scripts/backend/ApplicationAutoScale.json --min-capacity 1 --max-capacity 10 --region us-east-1
+aws application-autoscaling put-scaling-policy --policy-name dev-to-memory --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --policy-type TargetTrackingScaling --target-tracking-scaling-policy-configuration file://scripts/backend/memory.json --cli-input-json file://scripts/backend/ApplicationAutoScale.json --region us-east-1
