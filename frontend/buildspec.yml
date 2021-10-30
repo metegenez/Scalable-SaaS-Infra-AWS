@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - APP_NAME=cloudvisor-backend
+      - REGION=us-east-1
+      - aws --version
+      - npm --version
+
+  build:
+    commands:
+      - echo Build started on `date`
+      - cd frontend
+      - npm run-script build
+      
+  post_build:
+    commands:
+      - echo Build is completed on `date`
+      - echo Pushing the build to S3...
+      - S3_BUCKET="s3://${DEPLOY_BUCKET}"
+      - aws s3 sync build "$S3_BUCKET"
+      - echo All success!
