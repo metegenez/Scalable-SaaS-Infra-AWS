@@ -31,8 +31,10 @@ USE_TZ = True
 TIME_ZONE = 'Europe/Istanbul'
 CORS_ORIGIN_ALLOW_ALL = True
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if os.environ.get("STAGE") == "dev" else False
 APPEND_SLASH = False
+print(os.environ.get("db_password"))
+print(os.environ.get("DB_HOST"))
 # Application definition
 
 INSTALLED_APPS = [
@@ -82,11 +84,11 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWD'),
-        'HOST': env('DB_HOST'),
-        'PORT': env('DB_PORT'),
+        'NAME': os.environ.get("DB_HOST"),
+        'USER': os.environ.get("db_username"),
+        'PASSWORD': os.environ.get("db_password"),
+        'HOST': os.environ.get("DB_HOST"),
+        'PORT': "5432",
         'TEST': {
             'NAME': 'metawise_{}'.format(time.time()),
         }

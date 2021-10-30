@@ -27,3 +27,8 @@ variable "github_personal_token" {
   type        = string
   sensitive   = true
 }
+
+variable "current_deployment_state" {
+  type        = string
+  description = "Since Blue/Green Deployment messes with the state, we use this as a workaround. It can be A or B. Blue and green roles interchangable between target groups."
+}

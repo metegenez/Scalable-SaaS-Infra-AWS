@@ -8,7 +8,7 @@ phases:
       - aws --version
       - jq --version
       - echo $CODEBUILD_WEBHOOK_EVENT
-      - echo Logging in to Amazon ECR...
+      - echo Logging in to Amazon ECR....
       - aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $BACKEND_REPOSITORY_URI
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION)
       - IMAGE_TAG=latest
@@ -20,6 +20,7 @@ phases:
       - echo Building the Docker image...
       - docker build -t $BACKEND_REPOSITORY_URI:latest backend/
       - docker tag $BACKEND_REPOSITORY_URI:latest $BACKEND_REPOSITORY_URI:$IMAGE_TAG
+      
 
   post_build:
     commands:
@@ -30,5 +31,12 @@ phases:
       - NEW_BACKEND_TASK_DEFINITION=$(echo $BACKEND_TASK_DEFINITION | jq --arg IMAGE "$NEW_BACKEND_IMAGE" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)')
       - NEW_BACKEND_TASK_INFO=$(aws ecs register-task-definition --region $REGION --cli-input-json "$NEW_BACKEND_TASK_DEFINITION")
       - NEW_BACKEND_REVISION=$(echo $NEW_BACKEND_TASK_INFO | jq '.taskDefinition.revision')
-      - aws ecs update-service --cluster $CLUSTER_NAME --service "$SERVICE_NAME" --task-definition "$TASK_DEFINITION_NAME:${NEW_BACKEND_REVISION}"
+      - NEW_BACKEND_TASK_ARN=$(echo $NEW_BACKEND_TASK_INFO | jq '.taskDefinition.taskDefinitionArn' | sed 's/\"//g') 
+      - echo $NEW_BACKEND_TASK_ARN
+      - echo $(jq --raw-output --arg NEW_BACKEND_TASK_ARN "$NEW_BACKEND_TASK_ARN" '(.Resources[] | select(.TargetService.Properties.LoadBalancerInfo.ContainerName == "backend") | .TargetService.Properties.TaskDefinition) |= $NEW_BACKEND_TASK_ARN' backend/AppSpecContent.json) > backend/AppSpecContent.json
+      - S3_BUCKET="s3://${DEPLOY_BUCKET}"
+      - echo $S3_BUCKET
+      - aws s3 cp backend/AppSpecContent.json "$S3_BUCKET"
+      - echo $(jq --arg DEPLOY_BUCKET "$DEPLOY_BUCKET" '.revision.s3Location.bucket = $DEPLOY_BUCKET'  backend/create-deployment.json) > backend/create-deployment.json
+      - aws deploy create-deployment --application-name "$APPLICATION_NAME" --deployment-group-name "$DP_GROUP_NAME" --region $REGION --cli-input-json file://backend/create-deployment.json
       - echo All success!
