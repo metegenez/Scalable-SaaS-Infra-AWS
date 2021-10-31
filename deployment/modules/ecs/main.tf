@@ -54,7 +54,7 @@ resource "aws_ecs_task_definition" "node1" {
         },
         {
           "name" : "RO_DB_NAME",
-          "value" : "${var.aws_rds_cluster_name}" //Findout settings from stage.
+          "value" : "${var.aws_rds_cluster_ro_host}" //Findout settings from stage.
         },
         {
           "name" : "DB_HOST",

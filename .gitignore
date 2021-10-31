@@ -13,3 +13,4 @@ urlshortener/*
 .env
 sa
 as
+deployment/.terraform/environment
