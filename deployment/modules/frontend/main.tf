@@ -52,6 +52,11 @@ resource "aws_codebuild_project" "FrontCodeBuild" {
       name  = "DEPLOY_BUCKET"
       value = "cloudvisor-${terraform.workspace}-frontend"
     }
+    environment_variable {
+      name  = "LOAD_BALANCER_URL"
+      value = "visor-api-${terraform.workspace}.metawise.co"
+    }
+    
   }
 
   source {

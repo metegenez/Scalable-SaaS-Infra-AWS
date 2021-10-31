@@ -12,10 +12,6 @@ const publicRoutes = [
     exact: true,
     component: lazy(() => import("./container/JobList")),
   },
-  {
-    path: PUBLIC_ROUTE.JOBS,
-    component: lazy(() => import("./container/JobList")),
-  },
 ];
 
 export default function Routes() {

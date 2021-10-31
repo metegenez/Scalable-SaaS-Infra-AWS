@@ -25,6 +25,9 @@ variable "ecs_target_group_a" {
 variable "aws_rds_cluster_host" {
 
 }
+variable "aws_rds_cluster_ro_host" {
+
+}
 variable "current_deployment_state" {
   
 }

@@ -45,6 +45,7 @@ module "ecs" {
   backend_ecr              = module.codedeploy.backend_ecr
   aws_rds_cluster_host     = module.rds.aws_rds_cluster_host
   aws_rds_cluster_name     = module.rds.aws_rds_cluster_name
+  aws_rds_cluster_ro_host  = module.rds.aws_rds_cluster_ro_host
   current_deployment_state = var.current_deployment_state
 }
 
@@ -52,6 +53,7 @@ module "autoscaling" {
   source                   = "./modules/autoscaling"
   ecs_cluster              = module.ecs.ecs_cluster
   ecs_service              = module.ecs.ecs_backend_service
+  aws_rds_cluster_id = module.rds.aws_rds_cluster_id
   current_deployment_state = var.current_deployment_state
 
 }

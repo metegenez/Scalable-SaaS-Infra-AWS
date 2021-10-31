@@ -12,6 +12,8 @@ phases:
 
   build:
     commands:
+      - cp .env.example .env
+      - sed -i "s,here,'$LOAD_BALANCER_URL',g" .env
       - echo Build started on `date`
       - npm run-script build
       

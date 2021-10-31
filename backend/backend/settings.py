@@ -31,10 +31,8 @@ USE_TZ = True
 TIME_ZONE = 'Europe/Istanbul'
 CORS_ORIGIN_ALLOW_ALL = True
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if os.environ.get("STAGE") == "dev" else False
+DEBUG = True if os.environ.get("STAGE") == "dev" or os.environ.get("STAGE") == "local" else False
 APPEND_SLASH = False
-print(os.environ.get("db_password"))
-print(os.environ.get("DB_HOST"))
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "corsheaders",
     "sample"
 ]
 
@@ -55,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -81,10 +81,13 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+DATABASE_ROUTERS = ['backend.DatabaseRouter.AuroraRouter']
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get("DB_HOST"),
+        'NAME': os.environ.get("DB_NAME"),
         'USER': os.environ.get("db_username"),
         'PASSWORD': os.environ.get("db_password"),
         'HOST': os.environ.get("DB_HOST"),
@@ -92,6 +95,14 @@ DATABASES = {
         'TEST': {
             'NAME': 'metawise_{}'.format(time.time()),
         }
+    },
+    'readonly': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get("DB_NAME"),
+        'USER': os.environ.get("db_username"),
+        'PASSWORD': os.environ.get("db_password"),
+        'HOST': os.environ.get("RO_DB_NAME"),
+        'PORT': '5432',
     }
 }
 

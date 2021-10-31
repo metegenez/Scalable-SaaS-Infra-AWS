@@ -27,6 +27,9 @@ resource "aws_ecs_task_definition" "node1" {
         }, {
         "name" : "db_password",
         "valueFrom" : "arn:aws:secretsmanager:us-east-1:714130184239:secret:rdsclustersecrets-Gm7kwP"
+      }, {
+        "name" : "SECRET_KEY",
+        "valueFrom" : "arn:aws:secretsmanager:us-east-1:714130184239:secret:rdsclustersecrets-Gm7kwP"
       }],
       PortMappings : [
         {
@@ -41,9 +44,16 @@ resource "aws_ecs_task_definition" "node1" {
           "name" : "STAGE",
           "value" : "${terraform.workspace}" //Findout settings from stage.
         },
-
+        {
+          "name" : "API_URL",
+          "value" : "visor-api-${terraform.workspace}.metawise.co"
+        },
         {
           "name" : "DB_NAME",
+          "value" : "${var.aws_rds_cluster_name}" //Findout settings from stage.
+        },
+        {
+          "name" : "RO_DB_NAME",
           "value" : "${var.aws_rds_cluster_name}" //Findout settings from stage.
         },
         {

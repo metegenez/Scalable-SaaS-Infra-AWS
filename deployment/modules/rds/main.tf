@@ -7,6 +7,7 @@ resource "random_string" "finalshot" {
   length  = 5
   special = false
   upper   = false
+  number  = false
 }
 resource "aws_rds_cluster" "postgresql" {
   cluster_identifier        = "cloudvisor-${terraform.workspace}-aurora-cluster-demo"
