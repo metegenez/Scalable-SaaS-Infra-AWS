@@ -26,13 +26,20 @@ environ.Env.read_env()
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
-ALLOWED_HOSTS = ["*"]
+
 USE_TZ = True
 TIME_ZONE = 'Europe/Istanbul'
+ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = ['*']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.environ.get("STAGE") == "dev" or os.environ.get("STAGE") == "local" else False
 APPEND_SLASH = False
+print(os.environ.get("DB_HOST"))
+print(os.environ.get("db_username"))
+print(os.environ.get("db_password"))
+print(os.environ.get("STAGE"))
 # Application definition
 
 INSTALLED_APPS = [
