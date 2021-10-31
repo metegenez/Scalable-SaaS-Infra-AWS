@@ -23,7 +23,9 @@ class JobList extends Component {
     this.formRef = React.createRef();
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    console.log(process.env.REACT_APP_NOT_SECRET_CODE);
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.job_post_status !== this.props.job_post_status) {
