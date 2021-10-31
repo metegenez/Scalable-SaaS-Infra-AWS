@@ -25,7 +25,7 @@ environ.Env.read_env()
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY')["SECRET_KEY"]
 
 USE_TZ = True
 TIME_ZONE = 'Europe/Istanbul'
@@ -37,7 +37,8 @@ CORS_ALLOW_HEADERS = ['*']
 DEBUG = True if os.environ.get("STAGE") == "dev" or os.environ.get("STAGE") == "local" else False
 APPEND_SLASH = False
 print(os.environ.get("DB_HOST"))
-print(os.environ.get("db_username"))
+db_username = os.environ.get("db_username") if os.environ.get("STAGE") == "local" else os.environ.get("db_username")["db_username"]
+db_password = os.environ.get("db_password") if os.environ.get("STAGE") == "local" else os.environ.get("db_password")["db_password"]
 print(os.environ.get("db_password"))
 print(os.environ.get("STAGE"))
 # Application definition
@@ -95,8 +96,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get("DB_NAME"),
-        'USER': os.environ.get("db_username"),
-        'PASSWORD': os.environ.get("db_password"),
+        'USER': db_username,
+        'PASSWORD': db_password,
         'HOST': os.environ.get("DB_HOST"),
         'PORT': "5432",
         'TEST': {
@@ -106,8 +107,8 @@ DATABASES = {
     'readonly': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get("DB_NAME"),
-        'USER': os.environ.get("db_username"),
-        'PASSWORD': os.environ.get("db_password"),
+        'USER': db_username,
+        'PASSWORD': db_password,
         'HOST': os.environ.get("RO_DB_NAME"),
         'PORT': '5432',
     }
