@@ -20,7 +20,10 @@ import environ
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
-environ.Env.read_env()
+try:
+    environ.Env.read_env()
+except:
+    pass
 # Quick-start development settings - unsuitable for producti
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
