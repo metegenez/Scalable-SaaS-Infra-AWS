@@ -46,7 +46,7 @@ resource "aws_ecs_task_definition" "node1" {
         },
         {
           "name" : "API_URL",
-          "value" : "visor-api-${terraform.workspace}.metawise.co"
+          "value" : "https://visor-api-${terraform.workspace}.metawise.co"
         },
         {
           "name" : "DB_NAME",

@@ -54,7 +54,7 @@ resource "aws_codebuild_project" "FrontCodeBuild" {
     }
     environment_variable {
       name  = "LOAD_BALANCER_URL"
-      value = "visor-api-${terraform.workspace}.metawise.co"
+      value = "https://visor-api-${terraform.workspace}.metawise.co"
     }
     
   }

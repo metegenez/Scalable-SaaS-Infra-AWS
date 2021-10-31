@@ -8,7 +8,7 @@ function postNewJobHelper(payload) {
   };
   return axios
     .post(
-      "https://" + process.env.REACT_APP_BASE_URL + "/url",
+      process.env.REACT_APP_BASE_URL + "/url",
       {
         payload,
       },

@@ -40,7 +40,7 @@ CORS_ALLOW_HEADERS = ['*']
 
 APPEND_SLASH = False
 try:
-    secret = json.loads(os.environ.get("db_username"))
+    secret = json.loads(os.environ.get("secret"))
 except:
     secret = {}
 DEBUG = True if os.environ.get("STAGE") == "dev" or os.environ.get("STAGE") == "local" else False
