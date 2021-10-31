@@ -13,14 +13,14 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 import time
 from pathlib import Path
-
+import json
 import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env()
 try:
+    env = environ.Env()
     environ.Env.read_env()
 except:
     pass
@@ -28,7 +28,7 @@ except:
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')["SECRET_KEY"]
+
 
 USE_TZ = True
 TIME_ZONE = 'Europe/Istanbul'
@@ -37,14 +37,17 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = ['*']
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if os.environ.get("STAGE") == "dev" or os.environ.get("STAGE") == "local" else False
+
 APPEND_SLASH = False
-print(os.environ.get("DB_HOST"))
-db_username = os.environ.get("db_username") if os.environ.get("STAGE") == "local" else os.environ.get("db_username")["db_username"]
-db_password = os.environ.get("db_password") if os.environ.get("STAGE") == "local" else os.environ.get("db_password")["db_password"]
-print(os.environ.get("db_password"))
-print(os.environ.get("STAGE"))
-# Application definition
+try:
+    secret = json.loads(os.environ.get("db_username"))
+except:
+    secret = {}
+DEBUG = True if os.environ.get("STAGE") == "dev" or os.environ.get("STAGE") == "local" else False
+db_username = env("db_username") if os.environ.get("STAGE") == "local" else secret["db_username"]
+db_password = env("db_password") if os.environ.get("STAGE") == "local" else secret["db_password"]
+SECRET_KEY = env("SECRET_KEY") if os.environ.get("STAGE") == "local" else secret["SECRET_KEY"]
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
