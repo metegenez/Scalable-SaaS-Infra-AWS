@@ -59,7 +59,7 @@ resource "aws_codebuild_webhook" "BackendCodeBuildWebHook" {
 
 
   dynamic "filter_group" {
-    for_each = terraform.workspace == "dev" ? ["1"] : []
+    for_each = terraform.workspace == "dev" ? ["1"] : ["1"]
     content {
       filter {
         type    = "EVENT"
@@ -79,7 +79,7 @@ resource "aws_codebuild_webhook" "BackendCodeBuildWebHook" {
   }
 
   dynamic "filter_group" {
-    for_each = terraform.workspace != "dev" ? ["1"] : []
+    for_each = terraform.workspace != "dev" ? [] : []
     content {
       filter {
         type    = "EVENT"

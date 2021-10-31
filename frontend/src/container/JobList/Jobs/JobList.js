@@ -1,4 +1,4 @@
-import { Button, Col, PageHeader, Row } from "antd";
+import { Button, Col, Input, PageHeader, Row } from "antd";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import actions from "../../../actions";
@@ -12,9 +12,8 @@ class JobList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      create_job_visible: false,
+      url: "",
     };
-    this.handleCreateJobClick = this.handleCreateJobClick.bind(this);
   }
 
   componentDidMount() {
@@ -24,21 +23,25 @@ class JobList extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.job_post_status !== this.props.job_post_status) {
       if (this.props.job_post_status === true) {
-        successNotification("Success", "Job created successfuly");
+        successNotification("Success", "Url Shorthened");
 
-        this.setState({ create_job_visible: false });
         this.props.getJobList();
       } else if (this.props.job_post_status === false) {
-        failNotification("Job cannot be deleted.");
+        failNotification("Url cannot be shortened.");
       }
     }
   }
 
-  handleCreateJobClick(value) {
-    this.setState({ create_job_visible: value });
-  }
-
   render() {
+    const selectAfter = (
+      <Button
+        type="text"
+        key={"sa"}
+        onClick={() => this.props.shorthenUrl(true)}
+      >
+        SHORTEN
+      </Button>
+    );
     return (
       <>
         <Row>
@@ -46,12 +49,9 @@ class JobList extends Component {
             <PageHeader
               className="site-page-header"
               style={{ padding: "20px 35px" }}
-              title={<h3>Port Scan Jobs</h3>}
+              title={<h3>Url Shorthener</h3>}
               // style={{ padding: "16px 0" }}
               extra={[
-                <Button key={"as"} onClick={() => this.props.getJobList()}>
-                  Refresh
-                </Button>,
                 <Button
                   key={"sa"}
                   type="primary"
@@ -61,6 +61,20 @@ class JobList extends Component {
                 </Button>,
               ]}
             ></PageHeader>
+          </Col>
+          <Col span={10} offset={7}>
+            <Input
+              size="large"
+              addonBefore="https://"
+              defaultValue="mysite"
+              onChange={(e) =>
+                this.setState({ url: "https://" + e.target.value })
+              }
+              addonAfter={selectAfter}
+            />
+          </Col>
+
+          <Col span={18} offset={3}>
             <CreateJob
               key={this.state.create_job_visible}
               history={this.props.history}

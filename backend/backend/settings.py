@@ -31,10 +31,8 @@ USE_TZ = True
 TIME_ZONE = 'Europe/Istanbul'
 CORS_ORIGIN_ALLOW_ALL = True
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if os.environ.get("STAGE") == "dev" else False
+DEBUG = True if os.environ.get("STAGE") == "dev" or os.environ.get("STAGE") == "local" else False
 APPEND_SLASH = False
-print(os.environ.get("db_password"))
-print(os.environ.get("DB_HOST"))
 # Application definition
 
 INSTALLED_APPS = [

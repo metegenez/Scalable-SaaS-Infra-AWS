@@ -10,7 +10,7 @@ function postNewJobHelper(payload) {
   };
   return axios
     .post(
-      "http://127.0.0.1:5000" + "/jobs",
+      process.env.REACT_APP_BASE_URL + "/jobs",
       {
         ip_range,
         port_range,
@@ -52,7 +52,7 @@ function getAllJobsHelper(payload) {
     headers: {},
   };
   return axios
-    .get("http://127.0.0.1:5000" + "/jobs", config)
+    .get(process.env.REACT_APP_BASE_URL + "/jobs", config)
     .then((response) => {
       return response;
     });
@@ -61,8 +61,6 @@ function getAllJobsHelper(payload) {
 function* getAllJobs(action) {
   try {
     const response = yield call(getAllJobsHelper, action.payload);
-    console.log("get geliyor");
-    console.log(response.data);
     if (response.status === 200) {
       console.log(response.data);
       yield put({
@@ -83,7 +81,7 @@ function getJobHelper(payload) {
   };
   console.log("payload: " + payload);
   return axios
-    .get("http://127.0.0.1:5000" + "/jobs/" + payload.job_id, config)
+    .get(process.env.REACT_APP_BASE_URL + "/jobs/" + payload.job_id, config)
     .then((response) => {
       return response;
     });
