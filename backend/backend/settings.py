@@ -39,12 +39,14 @@ CORS_ALLOW_HEADERS = ['*']
 # SECURITY WARNING: don't run with debug turned on in production!
 
 APPEND_SLASH = False
+print(os.environ.get("db_username"))
+print("-------")
+print(os.environ.get("secret"))
 try:
     secret = json.loads(os.environ.get("secret"))
-    print(os.environ.get("db_username"))
-    print("-------")
     print(secret)
 except:
+    print("olmadı")
     secret = {}
 DEBUG = True if os.environ.get("STAGE") == "dev" or os.environ.get("STAGE") == "local" else False
 db_username = env("db_username") if os.environ.get("STAGE") == "local" else secret["db_username"]
