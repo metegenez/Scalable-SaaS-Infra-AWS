@@ -53,6 +53,7 @@ module "autoscaling" {
   source                   = "./modules/autoscaling"
   ecs_cluster              = module.ecs.ecs_cluster
   ecs_service              = module.ecs.ecs_backend_service
+  aws_rds_cluster_id = module.rds.aws_rds_cluster_id
   current_deployment_state = var.current_deployment_state
 
 }
