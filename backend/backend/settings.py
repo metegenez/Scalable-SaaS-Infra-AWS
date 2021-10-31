@@ -81,6 +81,9 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+DATABASE_ROUTERS = ['backend.DatabaseRouter.AuroraRouter']
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -92,6 +95,14 @@ DATABASES = {
         'TEST': {
             'NAME': 'metawise_{}'.format(time.time()),
         }
+    },
+    'readonly': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get("DB_NAME"),
+        'USER': os.environ.get("db_username"),
+        'PASSWORD': os.environ.get("db_password"),
+        'HOST': os.environ.get("RO_DB_NAME"),
+        'PORT': '5432',
     }
 }
 
