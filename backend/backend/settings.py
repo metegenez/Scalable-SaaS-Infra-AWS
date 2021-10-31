@@ -41,12 +41,16 @@ CORS_ALLOW_HEADERS = ['*']
 APPEND_SLASH = False
 try:
     secret = json.loads(os.environ.get("secret"))
+    print(os.environ.get("db_username"))
+    print("-------")
+    print(secret)
 except:
     secret = {}
 DEBUG = True if os.environ.get("STAGE") == "dev" or os.environ.get("STAGE") == "local" else False
 db_username = env("db_username") if os.environ.get("STAGE") == "local" else secret["db_username"]
 db_password = env("db_password") if os.environ.get("STAGE") == "local" else secret["db_password"]
 SECRET_KEY = env("SECRET_KEY") if os.environ.get("STAGE") == "local" else secret["SECRET_KEY"]
+
 
 
 INSTALLED_APPS = [
