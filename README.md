@@ -107,7 +107,6 @@ In this project, we didnot use "default" workspace. We created 3 workspaces for 
 cd deployment
 terraform workspace new dev
 terraform workspace new stage
-terraform workspace new prod
 ```
 
 and start with
