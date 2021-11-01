@@ -1,4 +1,4 @@
-import { Layout, Menu } from "antd";
+import { Layout } from "antd";
 import { Provider } from "react-redux";
 import Routes from "./router";
 import configureStore from "./store";
@@ -30,7 +30,7 @@ const App = () => (
       >
         <Header>
           <div className="logo" />
-          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["0"]}>
+          {/* <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["0"]}>
             <Menu.Item
               key={"0"}
               onClick={() => {
@@ -40,13 +40,13 @@ const App = () => (
             >
               Scanner
             </Menu.Item>
-          </Menu>
+          </Menu> */}
         </Header>
         <Content style={styles.content}>
           <Routes />
         </Content>
         <Footer style={{ textAlign: "center" }}>
-          Scalable Port Scanner ©2021 Created by Mete
+          Url Shorthener ©2021 Created by Mete
         </Footer>
       </Layout>
     </>

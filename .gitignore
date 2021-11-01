@@ -10,5 +10,7 @@ deployment/.terraform.lock.hcl
 urlshortener/*
 *.zip
 **/migrations/**
+.env
 sa
 as
+deployment/.terraform/environment

@@ -5,8 +5,8 @@ from .models import Url
 from rest_framework.response import Response
 from rest_framework import status
 import uuid
-
-
+from django.core.validators import URLValidator
+import os
 # Create your views here.
 class HealthCheck(APIView):
     permission_classes = [AllowAny]
@@ -25,14 +25,6 @@ class UrlRedirect(APIView):
 
 class UrlInfo(APIView):
     permission_classes = [AllowAny]
-    def get(self, request):
-        prefix = request.query_params["prefix"]
-        route = Url.objects.filter(calculated_prefix=prefix).first()
-        content = {
-            "route_count": route.routing_count
-        }
-        return Response(content, status=status.HTTP_200_OK)
-
     def post(self, request):
         try:
             if "prefix" in request.query_params:
@@ -41,13 +33,19 @@ class UrlInfo(APIView):
                     return Response({"error": "prefix duplicated"}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 prefix = uuid.uuid4().hex[:7].lower()
-            url = request.query_params["url"]
+            validate = URLValidator()
+            url = "https://" + request.data["payload"]["url"]
+            try:
+                validate(url)
+            except:
+                return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
             if Url.objects.filter(provided_url=url).count() > 0:
-                Response({}, status=status.HTTP_200_OK)
+                return Response({}, status=status.HTTP_200_OK)
             Url.objects.create(provided_url=url, calculated_prefix=prefix)
             content = {
                 "url": url,
-                "prefix": prefix
+                "shortened": os.environ.get("API_URL") + "/" + prefix
             }
             return Response(content, status=status.HTTP_200_OK)
         except:

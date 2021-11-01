@@ -2,6 +2,13 @@
 
 data "aws_region" "current" {}
 
+data "aws_secretsmanager_secret" "by-arn" {
+  arn = var.aws_secret_manager_secret_arn
+}
+
+data "aws_secretsmanager_secret_version" "secret" {
+  secret_id = data.aws_secretsmanager_secret.by-arn.id
+}
 
 resource "aws_cloudwatch_log_group" "LogGroup" {
   name              = "cloudvisor-node-${terraform.workspace}"
@@ -22,12 +29,9 @@ resource "aws_ecs_task_definition" "node1" {
         "python3 manage.py runserver 0.0.0.0:8000 "
       ],
       "secrets" : [{
-        "name" : "db_username",
-        "valueFrom" : "arn:aws:secretsmanager:us-east-1:714130184239:secret:rdsclustersecrets-Gm7kwP"
-        }, {
-        "name" : "db_password",
-        "valueFrom" : "arn:aws:secretsmanager:us-east-1:714130184239:secret:rdsclustersecrets-Gm7kwP"
-      }],
+        "name" : "secret",
+        "valueFrom" : "${var.aws_secret_manager_secret_arn}"
+        }],
       PortMappings : [
         {
           ContainerPort : 8000,
@@ -41,10 +45,17 @@ resource "aws_ecs_task_definition" "node1" {
           "name" : "STAGE",
           "value" : "${terraform.workspace}" //Findout settings from stage.
         },
-
+        {
+          "name" : "API_URL",
+          "value" : "https://${var.backend_sub_domain_prefix}-${terraform.workspace}.${var.domain_name}"
+        },
         {
           "name" : "DB_NAME",
           "value" : "${var.aws_rds_cluster_name}" //Findout settings from stage.
+        },
+        {
+          "name" : "RO_DB_NAME",
+          "value" : "${var.aws_rds_cluster_ro_host}" //Findout settings from stage.
         },
         {
           "name" : "DB_HOST",
@@ -109,7 +120,7 @@ resource "aws_ecs_service" "node1" {
   }
 
   load_balancer {
-    target_group_arn = var.current_deployment_state == "A" ? var.ecs_target_group_a.arn : var.ecs_target_group_b.arn
+    target_group_arn = var.ecs_target_group_a.arn
     container_name   = "backend"
     container_port   = 8000
   }

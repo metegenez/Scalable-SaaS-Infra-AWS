@@ -10,6 +10,14 @@ module "vpc" {
 
 module "frontend" {
   source = "./modules/frontend"
+  branch = var.branch
+  frontend_sub_domain_prefix = var.frontend_sub_domain_prefix
+  backend_sub_domain_prefix = var.backend_sub_domain_prefix
+  hosted_zone_id = var.hosted_zone_id
+  aws_secret_manager_secret_arn = var.aws_secret_manager_secret_arn
+  github_repository = var.github_repository
+  acm_certificate = var.acm_certificate
+  domain_name = var.domain_name
 }
 
 module "elb" {
@@ -19,7 +27,7 @@ module "elb" {
   load_balancer_subnet_b   = module.vpc.load_balancer_subnet_b
   load_balancer_subnet_c   = module.vpc.load_balancer_subnet_c
   vpc                      = module.vpc.vpc
-  current_deployment_state = var.current_deployment_state
+  acm_certificate = var.acm_certificate
 }
 
 module "iam" {
@@ -30,6 +38,8 @@ module "iam" {
 module "route" {
   source         = "./modules/route"
   hosted_zone_id = var.hosted_zone_id
+  domain_name = var.domain_name
+  backend_sub_domain_prefix = var.backend_sub_domain_prefix
   elb            = module.elb.elb
 }
 
@@ -45,46 +55,39 @@ module "ecs" {
   backend_ecr              = module.codedeploy.backend_ecr
   aws_rds_cluster_host     = module.rds.aws_rds_cluster_host
   aws_rds_cluster_name     = module.rds.aws_rds_cluster_name
-  current_deployment_state = var.current_deployment_state
+  aws_rds_cluster_ro_host  = module.rds.aws_rds_cluster_ro_host
+  backend_sub_domain_prefix = var.backend_sub_domain_prefix
+  domain_name = var.domain_name
+  aws_secret_manager_secret_arn = var.aws_secret_manager_secret_arn
 }
 
 module "autoscaling" {
   source                   = "./modules/autoscaling"
   ecs_cluster              = module.ecs.ecs_cluster
   ecs_service              = module.ecs.ecs_backend_service
-  current_deployment_state = var.current_deployment_state
+  aws_rds_cluster_id = module.rds.aws_rds_cluster_id
 
 }
 
-# module "onlycodedeploy" {
-#   source                     = "git::https://github.com/tmknom/terraform-aws-codedeploy-for-ecs.git?ref=tags/1.2.0"
-#   name                       = "example"
-#   ecs_cluster_name           = module.ecs.ecs_cluster.name
-#   ecs_service_name           = module.ecs.ecs_backend_service.name
-#   lb_listener_arns           = ["${var.lb_listener_arns}"]
-#   blue_lb_target_group_name  = var.blue_lb_target_group_name
-#   green_lb_target_group_name = var.green_lb_target_group_name
-# }
-
 module "codedeploy" {
   source                       = "./modules/codedeploy"
-  github_personal_access_token = var.github_personal_token
+  branch = var.branch
+  github_repository = var.github_repository
   ecs_backend_service          = module.ecs.ecs_backend_service
   ecs_cluster                  = module.ecs.ecs_cluster
   ecs_backend_taskdefinition   = module.ecs.ecs_backend_taskdefinition
   ecs_target_group_b           = module.elb.ecs_target_group_b
   ecs_target_group_a           = module.elb.ecs_target_group_a
   aws_backend_lb_listener      = module.elb.aws_backend_lb_listener
-  current_deployment_state     = var.current_deployment_state
+  aws_secret_manager_secret_arn = var.aws_secret_manager_secret_arn
 }
 
 module "rds" {
   source         = "./modules/rds"
-  db_username    = var.db_username
-  db_password    = var.db_password
   rds_cluster_sg = module.vpc.rds_cluster_sg
   rds_subnet_a   = module.vpc.rds_subnet_a
   rds_subnet_b   = module.vpc.rds_subnet_b
   rds_subnet_c   = module.vpc.rds_subnet_c
+  aws_secret_manager_secret_arn = var.aws_secret_manager_secret_arn
 }
 

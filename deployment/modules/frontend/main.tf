@@ -1,5 +1,5 @@
 data "aws_secretsmanager_secret" "by-arn" {
-  arn = "arn:aws:secretsmanager:us-east-1:714130184239:secret:rdsclustersecrets-Gm7kwP"
+  arn = var.aws_secret_manager_secret_arn
 }
 
 data "aws_secretsmanager_secret_version" "secret" {
@@ -8,8 +8,8 @@ data "aws_secretsmanager_secret_version" "secret" {
 
 
 resource "aws_route53_record" "front" {
-  zone_id = "Z08633611HETQYXOEWMJ4"
-  name    = "visor-${terraform.workspace}.metawise.co"
+  zone_id = var.hosted_zone_id
+  name    = "${var.frontend_sub_domain_prefix}-${terraform.workspace}.${var.domain_name}"
   type    = "A"
 
   alias {
@@ -52,11 +52,16 @@ resource "aws_codebuild_project" "FrontCodeBuild" {
       name  = "DEPLOY_BUCKET"
       value = "cloudvisor-${terraform.workspace}-frontend"
     }
+    environment_variable {
+      name  = "LOAD_BALANCER_URL"
+      value = "https://${var.backend_sub_domain_prefix}-${terraform.workspace}.${var.domain_name}"
+    }
+    
   }
 
   source {
     type            = "GITHUB"
-    location        = "https://github.com/metegenez/Scalable-SaaS-Infra-AWS.git"
+    location        = var.github_repository
     git_clone_depth = 1
     buildspec       = "frontend/buildspec.yml"
 
@@ -125,9 +130,8 @@ resource "aws_codebuild_source_credential" "GithubCredentials" {
 resource "aws_codebuild_webhook" "FrontCodeBuildWebHook" {
   project_name = aws_codebuild_project.FrontCodeBuild.name
 
-  dynamic "filter_group" {
-    for_each = terraform.workspace == "dev" ? ["1"] : []
-    content {
+  filter_group {
+
       filter {
         type    = "EVENT"
         pattern = "PUSH"
@@ -144,29 +148,7 @@ resource "aws_codebuild_webhook" "FrontCodeBuildWebHook" {
       }
     }
   }
-
-  dynamic "filter_group" {
-    for_each = terraform.workspace != "dev" ? ["1"] : []
-    content {
-      filter {
-        type    = "EVENT"
-        pattern = "PULL_REQUEST_MERGED"
-      }
-
-      filter {
-        type    = "HEAD_REF"
-        pattern = lookup(var.branch, terraform.workspace, "dev")
-      }
-
-      filter {
-        type    = "FILE_PATH"
-        pattern = "frontend/*"
-      }
-    }
-  }
-
-
-}
+  
 
 resource "aws_s3_bucket_policy" "bucket_policy" {
   bucket = aws_s3_bucket.deploy_bucket.id
@@ -218,7 +200,7 @@ resource "aws_cloudfront_distribution" "website_cdn" {
 
   default_root_object = "index.html"
 
-  aliases = ["visor-${terraform.workspace}.metawise.co"]
+  aliases = ["${var.frontend_sub_domain_prefix}-${terraform.workspace}.${var.domain_name}"]
 
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD", "DELETE", "OPTIONS", "PATCH", "POST", "PUT"]
@@ -247,12 +229,12 @@ resource "aws_cloudfront_distribution" "website_cdn" {
 
   viewer_certificate {
     ssl_support_method  = "sni-only"
-    acm_certificate_arn = "arn:aws:acm:us-east-1:714130184239:certificate/6bcf0578-892d-441b-9eee-1be9ad1fd9d7"
+    acm_certificate_arn = var.acm_certificate
   }
-
   tags = {
     Project = "cloudvisor-${terraform.workspace}"
   }
 }
+
 
 
