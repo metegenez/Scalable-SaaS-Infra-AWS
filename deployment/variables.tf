@@ -13,9 +13,6 @@ variable "aws_secret_manager_secret_arn"{
   description = "Use Secrets Manager to store, rotate, monitor, and control access to secrets such as database credentials, API keys, and OAuth tokens."
 }
 
-variable "terraform_backend_s3_bucket"{
-  type        = string
-}
 
 variable "branch" {
   type = map(string)

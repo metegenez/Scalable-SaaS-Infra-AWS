@@ -26,6 +26,8 @@ resource "aws_ecs_task_definition" "node1" {
       Command : [
         "bash",
         "-c",
+        "python3 manage.py makemigrations",
+        "python3 manage.py migrate",
         "python3 manage.py runserver 0.0.0.0:8000 "
       ],
       "secrets" : [{
