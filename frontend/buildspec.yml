@@ -1,0 +1,26 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - APP_NAME=cloudvisor-backend
+      - REGION=us-east-1
+      - aws --version
+      - npm --version
+      - cd frontend
+      - npm install
+
+  build:
+    commands:
+      - cp .env.example .env
+      - sed -i "s,here,'$LOAD_BALANCER_URL',g" .env
+      - echo Build started on `date`
+      - npm run-script build
+      
+  post_build:
+    commands:
+      - echo Build is completed on `date`
+      - echo Pushing the build to S3...
+      - S3_BUCKET="s3://${DEPLOY_BUCKET}"
+      - aws s3 sync build "$S3_BUCKET"
+      - echo All success!

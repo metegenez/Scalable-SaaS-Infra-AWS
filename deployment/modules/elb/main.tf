@@ -14,27 +14,50 @@ resource "aws_lb" "elb" {
   }
 }
 
-resource "aws_lb_target_group" "ecs" {
-  name        = "ecs"
-  port        = 80
+resource "aws_lb_target_group" "target_b" {
+  name        = "backend-target-b-${terraform.workspace}-${substr(uuid(), 0, 3)}"
+  port        = 8000
   protocol    = "HTTP"
   vpc_id      = var.vpc.id
   target_type = "ip"
-
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes        = [name]
+  }
   health_check {
-    enabled             = true
     interval            = 300
-    path                = "/"
-    timeout             = 60
-    matcher             = "200"
-    healthy_threshold   = 5
-    unhealthy_threshold = 5
+    timeout             = 120
+    unhealthy_threshold = 10
+    path                = "/healthcheck/"
   }
 
   tags = {
     Project = "cloudvisor-${terraform.workspace}"
   }
 }
+
+resource "aws_lb_target_group" "target_a" {
+  name        = "backend-target-a-${terraform.workspace}-${substr(uuid(), 0, 3)}"
+  port        = 8000
+  protocol    = "HTTP"
+  vpc_id      = var.vpc.id
+  target_type = "ip"
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes        = [name]
+  }
+  health_check {
+    interval            = 300
+    timeout             = 120
+    unhealthy_threshold = 10
+    path                = "/healthcheck/"
+  }
+
+  tags = {
+    Project = "cloudvisor-${terraform.workspace}"
+  }
+}
+
 
 resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.elb.arn
@@ -44,20 +67,17 @@ resource "aws_lb_listener" "https" {
   certificate_arn   = var.acm_certificate
 
   default_action {
-    type = "authenticate-cognito"
-
-    authenticate_cognito {
-      user_pool_arn       = var.cognito_pool.arn
-      user_pool_client_id = var.cognito_client.id
-      user_pool_domain    = var.cognito_domain.domain
-    }
-  }
-
-  default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.ecs.arn
+    target_group_arn = aws_lb_target_group.target_a.arn
+  }
+  lifecycle {
+    ignore_changes = [
+      default_action
+    ]
   }
 }
+
+
 
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.elb.arn

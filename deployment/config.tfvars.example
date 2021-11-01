@@ -1,0 +1,13 @@
+region="us-east-1"
+hosted_zone_id=""
+acm_certificate="arn:aws:acm:us-east-1:xxxxxxxxxxxx"
+aws_secret_manager_secret_arn="arn:aws:secretsmanager:us-east-1:xxxxxxxxxxxx"
+branch = {
+    dev   = "dev"
+    stage = "stage"
+    prod  = "master"
+}
+domain_name="xxxxx.co"
+backend_sub_domain_prefix="xxxx-api"
+frontend_sub_domain_prefix="xxxx"
+github_repository="https://github.com/xxxxx.git"

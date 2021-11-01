@@ -196,6 +196,19 @@ resource "aws_security_group_rule" "ingress_rds_cluster" {
   type                     = "ingress"
 }
 
+resource "aws_security_group_rule" "dev_ingress_rds_cluster" {
+  count = terraform.workspace == "dev" ? 1 : 0
+  from_port                = 5432
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.rds_cluster.id
+  to_port                  = 5432
+  cidr_blocks = [
+  "0.0.0.0/0"]
+  type                     = "ingress"
+}
+
+
+
 resource "aws_security_group_rule" "egress_rds_cluster" {
   type      = "egress"
   from_port = 0
@@ -230,10 +243,10 @@ resource "aws_security_group_rule" "ingress_load_balancer_https" {
 }
 
 resource "aws_security_group_rule" "ingress_ecs_task_elb" {
-  from_port                = 80
+  from_port                = 8000
   protocol                 = "tcp"
   security_group_id        = aws_security_group.ecs_task.id
-  to_port                  = 80
+  to_port                  = 8000
   source_security_group_id = aws_security_group.load_balancer.id
   type                     = "ingress"
 }
@@ -257,3 +270,76 @@ resource "aws_security_group_rule" "egress_ecs_task" {
   "0.0.0.0/0"]
   security_group_id = aws_security_group.ecs_task.id
 }
+
+
+# resource "aws_security_group" "vpc_endpoint" {
+#   vpc_id = aws_vpc.vpc.id
+#   tags = {
+#     Project = "cloudvisor-${terraform.workspace}"
+#   }
+# }
+
+# resource "aws_security_group_rule" "ingress_vpc_endpoint_https" {
+#   from_port         = 443
+#   to_port           = 443
+#   protocol          = "tcp"
+#   security_group_id = aws_security_group.vpc_endpoint.id
+#   cidr_blocks = [
+#   "0.0.0.0/0"]
+#   type = "ingress"
+# }
+
+# resource "aws_security_group_rule" "egress_vpc_endpoint" {
+#   type      = "egress"
+#   from_port = 0
+#   to_port   = 65535
+#   protocol  = "tcp"
+#   cidr_blocks = [
+#   "0.0.0.0/0"]
+#   security_group_id = aws_security_group.vpc_endpoint.id
+# }
+
+
+# resource "aws_vpc_endpoint" "ecr" {
+#   vpc_id            = aws_vpc.vpc.id
+#   service_name      = "com.amazonaws.us-east-1.ecr.dkr"
+#   vpc_endpoint_type = "Interface"
+#   subnet_ids = [
+#     aws_subnet.ecs_a.id, aws_subnet.ecs_c.id, aws_subnet.ecs_b.id
+#   ]
+#   security_group_ids = [
+#     aws_security_group.vpc_endpoint.id,
+#   ]
+#   tags = {
+#     Project = "cloudvisor-${terraform.workspace}"
+#   }
+# }
+
+# resource "aws_vpc_endpoint" "ecr-api" {
+#   vpc_id            = aws_vpc.vpc.id
+#   service_name      = "com.amazonaws.us-east-1.ecr.api"
+#   vpc_endpoint_type = "Interface"
+#   subnet_ids = [
+#     aws_subnet.ecs_a.id, aws_subnet.ecs_c.id, aws_subnet.ecs_b.id
+#   ]
+#   security_group_ids = [
+#     aws_security_group.vpc_endpoint.id,
+#   ]
+#   tags = {
+#     Project = "cloudvisor-${terraform.workspace}"
+#   }
+# }
+# resource "aws_vpc_endpoint" "secretmanager-api" {
+#   vpc_id            = aws_vpc.vpc.id
+#   service_name      = "com.amazonaws.us-east-1.secretsmanager"
+#   vpc_endpoint_type = "Interface"
+#   subnet_ids = [
+#     aws_subnet.ecs_a.id, aws_subnet.ecs_c.id, aws_subnet.ecs_b.id
+#   ]
+#   security_group_ids = [
+#     aws_security_group.vpc_endpoint.id,
+#   ]
+#   tags = {
+#     Project = "cloudvisor-${terraform.workspace}"
+#   }
+# }

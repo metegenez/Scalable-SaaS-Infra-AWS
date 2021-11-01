@@ -10,5 +10,9 @@ deployment/.terraform.lock.hcl
 urlshortener/*
 *.zip
 **/migrations/**
+.env
 sa
 as
+frontend/.env
+deployment/.terraform/environment
+!**/__init__.py
