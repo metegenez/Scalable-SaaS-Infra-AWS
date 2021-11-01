@@ -1,3 +1,11 @@
+data "aws_secretsmanager_secret" "by-arn" {
+  arn = var.aws_secret_manager_secret_arn
+}
+
+data "aws_secretsmanager_secret_version" "secret" {
+  secret_id = data.aws_secretsmanager_secret.by-arn.id
+}
+
 resource "aws_iam_role" "CodeBuildRole" {
   name               = "cloudvisor-CodeBuildRole-${terraform.workspace}"
   assume_role_policy = <<EOF
@@ -51,7 +59,7 @@ POLICY
 resource "aws_codebuild_source_credential" "GithubCredentials" {
   auth_type   = "PERSONAL_ACCESS_TOKEN"
   server_type = "GITHUB"
-  token       = var.github_personal_access_token
+  token       = jsondecode(data.aws_secretsmanager_secret_version.secret.secret_string)["github_personal_token"]
 }
 
 resource "aws_codebuild_webhook" "BackendCodeBuildWebHook" {
@@ -179,7 +187,7 @@ resource "aws_codebuild_project" "BackendCodeBuild" {
 
   source {
     type            = "GITHUB"
-    location        = "https://github.com/metegenez/Scalable-SaaS-Infra-AWS.git"
+    location        = var.github_repository
     git_clone_depth = 1
     buildspec       = "backend/buildspec.yml"
 

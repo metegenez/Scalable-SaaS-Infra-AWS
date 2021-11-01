@@ -68,7 +68,12 @@ resource "aws_lb_listener" "https" {
 
   default_action {
     type             = "forward"
-    target_group_arn = var.current_deployment_state == "A" ? aws_lb_target_group.target_a.arn : aws_lb_target_group.target_b.arn
+    target_group_arn = aws_lb_target_group.target_a.arn
+  }
+  lifecycle {
+    ignore_changes = [
+      default_action
+    ]
   }
 }
 

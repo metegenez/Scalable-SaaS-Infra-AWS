@@ -6,3 +6,5 @@ variable "hosted_zone_id" {
 variable "elb" {
 
 }
+variable "backend_sub_domain_prefix" {}
+variable "domain_name" {}
