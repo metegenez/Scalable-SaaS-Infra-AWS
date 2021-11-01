@@ -2,14 +2,6 @@
 
 The boilerplate implementation helps developers launch a scalable serverless containerized infrastructure to host frontend and services, store data in RDS. The solution supports a sample three-tier web application to a single Docker node in AWS. The application consists of frontend, backend, and database tiers. The frontend is static, the backend is stateless and the database is relational. The solution provides a AWS Fargate service for docker orhastration, AWS Codebuild and CodeDeploy for blue/green deployment, AWS S3&Cloudfront for client-side and AWS Aurora for relational database. Scability is ensured by autoscale groups attacted to Fargate services and Aurora. The solution is configured Development, Stage and Production environments separately. 
 
-# Solution Overview
-
-The diagram below presents the architecture you can automatically deploy using the solution's implementation guide and accompanying Terraform template template.
-
-![https://s3.us-west-2.amazonaws.com/secure.notion-static.com/8958b6f8-10eb-4694-b91b-ea9b779ae82d/cloudvisor_%281%29.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211101%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20211101T221900Z&X-Amz-Expires=86400&X-Amz-Signature=c33bc1754ee12abd19a849fa1f5903b59d3f64d84fbc52690c0076a91eb5d0b7&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D"cloudvisor%2520%281%29.png")
-
-Launching this stack will not be covered [AWS Free Tier](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-free-tier.html)
-
 # Automated deployment
 
 Before you launch the automated deployment, review the architecture, configuration, and other
