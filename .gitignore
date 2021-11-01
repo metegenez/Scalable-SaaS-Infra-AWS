@@ -15,3 +15,4 @@ sa
 as
 frontend/.env
 deployment/.terraform/environment
+!**/__init__.py
