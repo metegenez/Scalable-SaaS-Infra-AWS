@@ -43,10 +43,7 @@ APPEND_SLASH = False
 try:
     secret = json.loads(os.environ.get("secret"))
 except:
-    try:
-        secret = json.loads(os.environ.get("db_username")) #Due to ASM misconfiguration on Task Definition.
-    except:
-        secret = {}
+    secret = {}
 
 DEBUG = True if os.environ.get("STAGE") == "dev" or os.environ.get("STAGE") == "local" else False
 db_username = env("db_username") if os.environ.get("STAGE") == "local" else secret["db_username"]
