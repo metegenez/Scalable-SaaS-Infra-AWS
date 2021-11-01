@@ -97,6 +97,7 @@ In this project, we didnot use "default" workspace. We created 3 workspaces for 
 
 ```powershell
 cd deployment
+terraform init
 terraform workspace new dev
 terraform workspace new stage
 ```
