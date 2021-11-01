@@ -6,7 +6,7 @@ The boilerplate implementation helps developers launch a scalable serverless con
 
 The diagram below presents the architecture you can automatically deploy using the solution's implementation guide and accompanying Terraform template template.
 
-![https://s3.us-west-2.amazonaws.com/secure.notion-static.com/8958b6f8-10eb-4694-b91b-ea9b779ae82d/cloudvisor_%281%29.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211101%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20211101T221900Z&X-Amz-Expires=86400&X-Amz-Signature=c33bc1754ee12abd19a849fa1f5903b59d3f64d84fbc52690c0076a91eb5d0b7&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D"cloudvisor%2520%281%29.png)
+!['https://s3.us-west-2.amazonaws.com/secure.notion-static.com/8958b6f8-10eb-4694-b91b-ea9b779ae82d/cloudvisor_%281%29.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20211101%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20211101T221900Z&X-Amz-Expires=86400&X-Amz-Signature=c33bc1754ee12abd19a849fa1f5903b59d3f64d84fbc52690c0076a91eb5d0b7&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D"cloudvisor%2520%281%29.png')
 
 Launching this stack will not be covered [AWS Free Tier](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-free-tier.html)
 
