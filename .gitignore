@@ -12,3 +12,4 @@ urlshortener/*
 **/migrations/**
 sa
 as
+frontend/.env
