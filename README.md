@@ -179,7 +179,7 @@ terraform apply -var-file="config.tfvars"
 ```
 
 - Initiate Codebuild for Frontend on fresh start. Just change anything in /frontend folder and push.
-- Initiate Codebuild for Backend service on fresh start. This is due to creating first Elatic Container Registry for the service. Just change anything in /frontend folder and push.
+- Initiate Codebuild for Backend service on fresh start. This is due to creating first Elatic Container Registry for the service. Just change anything in /backend folder and push.
 
 Initiation operations can be done with codes in buildspec.yml's as well. But pushing something to repository is less error prone.
 
